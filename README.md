@@ -1,127 +1,86 @@
-# TP3 – AI Agents avec LangChain & LangGraph
+<div align="center">
 
-> **Partie 1 – Agent simple avec LangChain**
+# 🤖 TP3 — Agentic AI · LangChain / LangGraph
 
-Ce projet illustre la création d'agents IA avec [LangChain](https://python.langchain.com/) et [LangGraph](https://langchain-ai.github.io/langgraph/).
-Cette première partie (notebook [`sma.ipynb`](sma.ipynb)) couvre, de manière progressive, les briques fondamentales d'un agent : initialisation des LLMs, invocation, sélection dynamique de modèle, mémoire conversationnelle et utilisation d'outils (*tools*).
+Dépôt regroupant **deux volets** complémentaires : un **notebook d'apprentissage** des
+patterns agentiques et une **application complète** qui les met en œuvre.
 
----
+`LangChain` · `LangGraph` · `Google Gemini` · `ChromaDB` · `HuggingFace` · `Streamlit`
 
-## 🎯 Objectifs
-
-- Créer un agent simple avec `create_agent`.
-- Utiliser plusieurs fournisseurs de LLM : **Google Gemini** (cloud) et **Ollama** (local).
-- Sélectionner dynamiquement le modèle selon le contexte d'exécution (`test` / `prod`) via un *middleware*.
-- Ajouter la **mémoire** conversationnelle à un agent (`InMemorySaver`, et exemple avec PostgreSQL).
-- Doter l'agent d'**outils** : fonctions personnalisées et recherche web (DuckDuckGo, Tavily).
+</div>
 
 ---
 
-## 🧱 Contenu du notebook `sma.ipynb`
+## 📚 Les deux projets
 
-| Section | Description |
-|--------|-------------|
-| **1. Initialisation des LLMs** | Configuration de `ChatGoogleGenerativeAI` (`gemini-2.5-flash`) et `ChatOllama` (modèle local). |
-| **2. Agent simple** | Création d'un agent avec `create_agent` et envoi d'un prompt via `invoke`. |
-| **3. Dynamic Model** | Middleware `wrap_model_call` qui choisit le modèle (`basic_llm` ou `advanced_llm`) selon `context["env"]`. |
-| **4. Mémoire** | Comparaison agent sans mémoire vs agent avec `InMemorySaver` (suivi via `thread_id`). Exemple de persistance avec `PostgresSaver`. |
-| **5. Tools** | Outils personnalisés (`get_meteo`, `get_employee_info`) appelés automatiquement par l'agent. |
-| **6. Recherche web** | Intégration de **DuckDuckGo** (`ddgs`) et de **Tavily** (`langchain-tavily`) comme outils de recherche. |
+### 1. 📓 SMA — Notebook d'introduction aux agents
+Notebook pédagogique [`sma.ipynb`](sma.ipynb) présentant pas à pas les briques d'un agent LLM :
+`create_agent`, choix des modèles (Gemini / Ollama), **middleware** de sélection dynamique,
+**mémoire** conversationnelle et **tools** (météo, employé, recherche web DuckDuckGo / Tavily).
 
----
+📖 **Documentation : [README_sma.md](README_sma.md)**
 
-## ⚙️ Prérequis
+### 2. 🧑‍💼 Assistant RH — Application complète *(create_agent)*
+Chatbot agentique pour les Ressources Humaines, qui combine les 4 piliers d'un agent moderne :
+- 🔍 **RAG** sur le règlement intérieur (PDF) ;
+- 🛠️ **Tools** : base de données employés + calculs RH déterministes (congés, ancienneté, primes) ;
+- ⚙️ **Middleware** : adaptation au rôle (employé / manager) ;
+- 🧠 **Mémoire** de conversation.
 
-- **Python ≥ 3.13** (voir [`.python-version`](.python-version))
-- [**uv**](https://docs.astral.sh/uv/) pour la gestion des dépendances et de l'environnement virtuel
-- [**Ollama**](https://ollama.com/) installé et lancé localement (pour les modèles locaux)
-- Des clés d'API valides (voir [Configuration](#-configuration))
+Implémentation avec le prebuilt **`create_agent`** de LangChain (haut niveau).
 
----
+📖 **Documentation : [assistant_rh/README.md](assistant_rh/README.md)**
 
-## 🚀 Installation
+### 3. 🔀 Assistant RH — version **LangGraph**
+La **même application**, mais l'agent est reconstruit explicitement avec un **graphe LangGraph**
+(`StateGraph`, nœud agent, `ToolNode`, arêtes conditionnelles) au lieu de `create_agent` — pour
+montrer en détail la boucle d'exécution agent ⇄ tools.
 
-```bash
-# Cloner le dépôt puis se placer dans le dossier
-cd TP3-AI-Agents-langchain-langGraph
-
-# Installer les dépendances et créer l'environnement virtuel
-uv sync
-```
-
-Lancer un modèle local avec Ollama (exemple) :
-
-```bash
-ollama pull gemma3:4b
-ollama serve
-```
-
-> ℹ️ Adaptez le nom du modèle Ollama dans le notebook à celui que vous avez téléchargé.
+📖 **Documentation : [assistant_rh_langgraph/README.md](assistant_rh_langgraph/README.md)**
 
 ---
 
-## 🔑 Configuration
-
-Créez un fichier `.env` à la racine du projet contenant vos clés d'API :
-
-```dotenv
-OPENAI_API_KEY=your_openai_api_key
-GOOGLE_API_KEY=your_google_api_key
-TAVILY_API_KEY=your_tavily_api_key
-```
-
-- **GOOGLE_API_KEY** : requise pour les modèles Gemini — [Google AI Studio](https://aistudio.google.com/app/apikey)
-- **TAVILY_API_KEY** : requise pour l'outil de recherche Tavily — [Tavily](https://tavily.com/)
-- **OPENAI_API_KEY** : optionnelle (présente pour les exemples utilisant OpenAI)
-
-> ⚠️ Le fichier `.env` est ignoré par Git ([`.gitignore`](.gitignore)) — ne committez jamais vos clés.
-
----
-
-## ▶️ Utilisation
-
-Ouvrez le notebook dans Jupyter ou VS Code et exécutez les cellules dans l'ordre :
-
-```bash
-uv run jupyter notebook sma.ipynb
-```
-
-Le point d'entrée minimal [`main.py`](main.py) peut être lancé avec :
-
-```bash
-uv run main.py
-```
-
----
-
-## 📦 Principales dépendances
-
-| Paquet | Rôle |
-|--------|------|
-| `langchain`, `langgraph` | Framework d'agents et orchestration |
-| `langchain-google-genai` | Intégration des modèles Google Gemini |
-| `langchain-ollama` | Intégration des modèles locaux Ollama |
-| `langchain-openai` | Intégration des modèles OpenAI |
-| `langchain-tavily`, `ddgs` | Outils de recherche web (Tavily, DuckDuckGo) |
-| `python-dotenv` | Chargement des variables d'environnement |
-| `ipykernel`, `ipython` | Exécution du notebook |
-
-La liste complète figure dans [`pyproject.toml`](pyproject.toml).
-
----
-
-## 📁 Structure du projet
+## 🗺️ Structure du dépôt
 
 ```
 TP3-AI-Agents-langchain-langGraph/
-├── sma.ipynb          # Notebook principal – Partie 1 (agent simple)
-├── main.py            # Point d'entrée minimal
-├── pyproject.toml     # Dépendances et configuration du projet
-├── uv.lock            # Verrouillage des versions (uv)
-├── .python-version    # Version de Python (3.13)
-├── .env               # Clés d'API (non versionné)
-└── README.md
+├── sma.ipynb                  # Projet 1 : notebook d'apprentissage   → README_sma.md
+├── README_sma.md              # Documentation du notebook
+├── assistant_rh/              # Projet 2 : Assistant RH (create_agent) → assistant_rh/README.md
+│   └── README.md
+├── assistant_rh_langgraph/    # Projet 3 : Assistant RH (LangGraph)    → assistant_rh_langgraph/README.md
+│   └── README.md
+├── pyproject.toml             # Dépendances (gérées par uv)
+├── .env                       # Clés API (non versionné)
+└── README.md                  # Ce fichier
 ```
+
+---
+
+## ⚙️ Pré-requis communs
+
+- **Python ≥ 3.13** et [`uv`](https://docs.astral.sh/uv/)
+- Un fichier `.env` à la racine :
+  ```env
+  GOOGLE_API_KEY=votre_cle_api
+  # Optionnelles (notebook) : TAVILY_API_KEY, et Ollama pour les modèles locaux
+  ```
+  *(Clé Gemini : [Google AI Studio](https://aistudio.google.com/app/apikey).)*
+
+Installation des dépendances :
+```bash
+uv sync
+```
+
+---
+
+## 🚀 Démarrage rapide
+
+| Projet | Commande |
+|---|---|
+| 📓 Notebook SMA | `uv run jupyter lab sma.ipynb` *(ou l'ouvrir dans VS Code)* |
+| 🧑‍💼 Assistant RH *(create_agent)* | `uv run streamlit run assistant_rh/app.py` |
+| 🔀 Assistant RH *(LangGraph)* | `uv run streamlit run assistant_rh_langgraph/app.py` |
 
 ---
 

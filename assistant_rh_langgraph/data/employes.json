@@ -1,0 +1,52 @@
+[
+  {
+    "matricule": "E-001",
+    "nom": "Hamza Rabih",
+    "departement": "Informatique",
+    "poste": "Ingenieur DevOps",
+    "date_embauche": "15/03/2021",
+    "jours_conges_pris": 12,
+    "salaire_base": 32000,
+    "statut": "CDI"
+  },
+  {
+    "matricule": "E-002",
+    "nom": "Sara El Amrani",
+    "departement": "Ressources Humaines",
+    "poste": "Responsable RH",
+    "date_embauche": "01/09/2018",
+    "jours_conges_pris": 18,
+    "salaire_base": 38000,
+    "statut": "CDI"
+  },
+  {
+    "matricule": "E-003",
+    "nom": "Youssef Benali",
+    "departement": "Maintenance",
+    "poste": "Technicien de maintenance",
+    "date_embauche": "10/01/2023",
+    "jours_conges_pris": 8,
+    "salaire_base": 28000,
+    "statut": "CDI"
+  },
+  {
+    "matricule": "E-004",
+    "nom": "Fatima Zahra Bennani",
+    "departement": "Comptabilite",
+    "poste": "Comptable senior",
+    "date_embauche": "22/06/2015",
+    "jours_conges_pris": 5,
+    "salaire_base": 45000,
+    "statut": "CDI"
+  },
+  {
+    "matricule": "E-005",
+    "nom": "Karim Idrissi",
+    "departement": "Commercial",
+    "poste": "Charge de clientele",
+    "date_embauche": "05/11/2024",
+    "jours_conges_pris": 3,
+    "salaire_base": 30000,
+    "statut": "CDD"
+  }
+]
