@@ -32,9 +32,17 @@ def render_content(content) -> str:
 
 
 def extract_tool_calls(messages) -> list[str]:
+    # Parcourt les messages de l'agent et renvoie la liste des outils appelés,
+    # formatés en texte lisible (ex: "recherche_reglement({'query': 'conges'})").
+    # Utile pour afficher / deboguer ce que l'agent a fait.
     calls = []
     for msg in messages:
+        # Tous les messages n'ont pas d'appels d'outils (ex: message utilisateur).
+        # getattr(..., None) evite l'erreur si l'attribut n'existe pas, et
+        # "or []" remplace None par une liste vide pour pouvoir boucler sans planter.
         for call in getattr(msg, "tool_calls", None) or []:
+            # call['name'] = nom de l'outil ; call.get('args', {}) = ses arguments
+            # ({} par defaut si l'outil n'en a pas, pour eviter une exception).
             calls.append(f"{call['name']}({call.get('args', {})})")
     return calls
 
@@ -90,7 +98,7 @@ def main():
                 tools.set_reglement_retriever(retriever)
                 st.success("Reglement mis a jour et persiste.")
 
-        st.divider()
+        st.divider()# Affiche une ligne horizontale pour separer visuellement deux sections de l'interface
 
         # --- Role (middleware) ---
         st.subheader("Role (middleware)")
@@ -102,7 +110,7 @@ def main():
         st.session_state.role = role
         st.caption(f"Modele actif : **{model_for_role(role)}**")
 
-        st.divider()
+        st.divider()# Affiche une ligne horizontale pour separer visuellement deux sections de l'interface
         if st.button("Nouvelle conversation"):
             st.session_state.thread_id = str(uuid4())
             st.session_state.history = []
